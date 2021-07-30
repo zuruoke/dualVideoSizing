@@ -86,8 +86,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       initialVideo1Width = initialVideo1Width / 1.5;
       }
       else {
-      initialVideo1Height = initialVideo1Height / 1.1;
-      initialVideo1Width = initialVideo1Width / 1.1;
+      initialVideo1Height = initialVideo1Height / 1.2;
+      initialVideo1Width = initialVideo1Width / 1.2;
       }
       i += 1;
     }

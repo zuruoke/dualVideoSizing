@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reminisce/video_player.dart';
+import 'package:reminisce/view/trimmer_view.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,15 +34,20 @@ class MyHomePage extends StatelessWidget {
     final XFile? videoFile1 = await picker.pickVideo(source: ImageSource.gallery, maxDuration: Duration(seconds: 30));
     final XFile? videoFile2 = await picker.pickVideo(source: ImageSource.gallery, maxDuration: Duration(seconds: 30));
     if (videoFile1 != null  && videoFile2 != null){
-      final File video1 = File(videoFile1.path);
-      final File video2 = File(videoFile2.path);
-      Navigator.push(context, MaterialPageRoute(
-        builder: (ctx) => VideoPlayerScreen( 
-          video1: video1,
-          video2: video2,
-          screenHeight: size.height,
-          screenWidth: size.width
-    )));
+      final File video_1 = File(videoFile1.path);
+      final File video_2 = File(videoFile2.path);
+    //   Navigator.push(context, MaterialPageRoute(
+    //     builder: (ctx) => VideoPlayerScreen( 
+    //       video1: video1,
+    //       video2: video2,
+    //       screenHeight: size.height,
+    //       screenWidth: size.width
+    // )));
+    Navigator.push(context, 
+      MaterialPageRoute(
+      builder: (_) => TrimmerView(
+        video1: video_1, video2: video_2)
+      ));
     }
     
   }
