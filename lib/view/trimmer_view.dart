@@ -8,21 +8,26 @@ import 'package:reminisce/trimmer/trimmer.dart' as trim2;
 import 'package:reminisce/trimmer/video_viewer.dart';
 import 'package:video_player/video_player.dart';
 
-
 // ignore: must_be_immutable
-class TrimmerView extends StatefulWidget{
+class TrimmerView extends StatefulWidget {
   File video1;
   File video2;
+  final Size screenSize;
 
-  TrimmerView({required this.video1, required this.video2});
+  TrimmerView(
+      {required this.video1, required this.video2, required this.screenSize});
 
   _TrimmerViewState createState() => _TrimmerViewState();
 }
 
 class _TrimmerViewState extends State<TrimmerView> {
+  // final trim1.Trimmer _trimmer1 = trim1.Trimmer(
+  //     deviceHeight: 781.0909090909091, deviceWidth: 392.72727272727275);
+  // final trim2.Trimmer _trimmer2 = trim2.Trimmer(
+  //     deviceHeight: 781.0909090909091, deviceWidth: 392.72727272727275);
 
-  final trim1.Trimmer _trimmer1 = trim1.Trimmer(deviceHeight: 816.0, deviceWidth: 432.0);
-  final trim2.Trimmer _trimmer2 = trim2.Trimmer(deviceHeight: 816, deviceWidth: 432.0);
+  late final trim1.Trimmer _trimmer1;
+  late final trim2.Trimmer _trimmer2;
 
   double _startValue1 = 0.0;
   double _endValue1 = 0.0;
@@ -43,17 +48,21 @@ class _TrimmerViewState extends State<TrimmerView> {
   }
 
   @override
-  void initState() { 
-    _loadVideo();
+  void initState() {
     super.initState();
-    
+    _trimmer1 = trim1.Trimmer(
+        deviceHeight: widget.screenSize.height,
+        deviceWidth: widget.screenSize.width);
+    _trimmer2 = trim2.Trimmer(
+        deviceHeight: widget.screenSize.height,
+        deviceWidth: widget.screenSize.width);
+    _loadVideo();
   }
 
   Future _saveVideo1() async {
     // setState(() {
     //   _progressVisibility = true;
     // });
-
 
     await _trimmer1
         .saveTrimmedVideo(
@@ -65,16 +74,14 @@ class _TrimmerViewState extends State<TrimmerView> {
         savedVideo1 = File(filePath);
       });
     });
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => Text("data")));
-  
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => Text("data")));
   }
 
   Future _saveVideo2() async {
     // setState(() {
     //   _progressVisibility = true;
     // });
-
 
     await _trimmer1
         .saveTrimmedVideo(
@@ -97,223 +104,218 @@ class _TrimmerViewState extends State<TrimmerView> {
         savedVideo2 = File(filePath);
       });
     });
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => Text("data"
-    )));
-  
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => Text("data")));
   }
 
-  _topRowWidget (){
-      return Positioned(
-        top: 30,
-        left: 10,
-        right: 20,
-        child: Container(
+  _topRowWidget() {
+    return Positioned(
+      top: 30,
+      left: 10,
+      right: 20,
+      child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-              IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_outlined,
-            color: Colors.white,
-            size: 35,
-          ),
-          onPressed: () {
-            // setState(() {
-            //   widget.video = null;
-            //   widget.trimmer = null;
-            // });
-            Navigator.of(context).pop();
-          },
-        ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 1,
-              primary: Colors.pink.shade400,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6.0),
-                )
-              )
+            IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_outlined,
+                color: Colors.white,
+                size: 35,
+              ),
+              onPressed: () {
+                // setState(() {
+                //   widget.video = null;
+                //   widget.trimmer = null;
+                // });
+                Navigator.of(context).pop();
+              },
             ),
-            child: Text(
-              'Next', 
-               style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            onPressed: _saveVideo2,
-          ),
-           ],
-          ),
-        ),
-      );
-    }
-
-    _trimEditor(){
-      final mq = MediaQuery.of(context).size;
-      return Positioned(
-        bottom: 60,
-        left: 5,
-        right: 5,
-        child: Column( 
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-        Center(
-          child: TrimEditor(
-            trimmer: _trimmer1,
-            maxVideoLength: const Duration(seconds: 30),
-            viewerHeight: 60.0,
-            viewerWidth: mq.width,
-            onChangeStart: (value){
-              _startValue1 = value;
-            },
-            onChangeEnd: (value){
-              _endValue1 = value;
-            },
-            onChangePlaybackState: (value){
-              setState(() {
-                _isPlaying1 = value;                
-              });
-            },
-          ),
-            ),
-            SizedBox(height: 20,),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.transparent
+                  elevation: 1,
+                  primary: Colors.pink.shade400,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                    Radius.circular(6.0),
+                  ))),
+              child: Text(
+                'Next',
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.white),
               ),
-              onPressed: () async {
-                bool playbackState = 
-                    await _trimmer1.videPlaybackControl(
-                      startValue: _startValue1, 
-                      endValue: _endValue1,
-                    );
+              onPressed: _saveVideo2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _trimEditor() {
+    final mq = MediaQuery.of(context).size;
+    return Positioned(
+      bottom: 60,
+      left: 5,
+      right: 5,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: TrimEditor(
+              trimmer: _trimmer1,
+              maxVideoLength: const Duration(seconds: 30),
+              viewerHeight: 60.0,
+              viewerWidth: mq.width,
+              onChangeStart: (value) {
+                _startValue1 = value;
+              },
+              onChangeEnd: (value) {
+                _endValue1 = value;
+              },
+              onChangePlaybackState: (value) {
                 setState(() {
-                  _isPlaying1 = playbackState;                  
+                  _isPlaying1 = value;
                 });
               },
-              child: _isPlaying1 
-                  ? Icon(
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(primary: Colors.transparent),
+            onPressed: () async {
+              bool playbackState = await _trimmer1.videPlaybackControl(
+                startValue: _startValue1,
+                endValue: _endValue1,
+              );
+              setState(() {
+                _isPlaying1 = playbackState;
+              });
+            },
+            child: _isPlaying1
+                ? Icon(
                     Icons.pause,
                     size: 80.0,
                     color: Colors.white,
                   )
                 : Icon(
-                  Icons.play_arrow,
-                  size: 80.0,
-                  color: Colors.white,
-                ),
-              )
-          ],
-        ),
-      );
-    }
+                    Icons.play_arrow,
+                    size: 80.0,
+                    color: Colors.white,
+                  ),
+          )
+        ],
+      ),
+    );
+  }
 
-    videoPlayback1() async {
-      bool playbackState = 
-        await _trimmer1.videPlaybackControl(
-                startValue: _startValue1, 
-                endValue: _endValue1,
-        );
-      
-      setState(() {
-        _isPlaying1 = playbackState;                  
-      });
-    
-    }
+  videoPlayback1() async {
+    bool playbackState = await _trimmer1.videPlaybackControl(
+      startValue: _startValue1,
+      endValue: _endValue1,
+    );
 
-    videoPlayback2() async {
-      bool playbackState = 
-        await _trimmer2.videPlaybackControl(
-                startValue: _startValue1, 
-                endValue: _endValue1,
-        );
-      
-      setState(() {
-        _isPlaying2 = playbackState;                  
-      });
-    
-    }
+    setState(() {
+      _isPlaying1 = playbackState;
+    });
+  }
 
-    dualTrimEditor(){
-      final mq = MediaQuery.of(context).size;
-      return Align(
-          alignment: Alignment.bottomCenter,
-          child: TrimEditor(
-            trimmer: index == 0 ? _trimmer1 : _trimmer2,
-            maxVideoLength: const Duration(seconds: 30),
-              viewerHeight: 60.0,
-              viewerWidth: mq.width,
-              onChangeStart: (value){
-                _startValue1 = value;
-             },
-              onChangeEnd: (value){
-                _endValue1 = value;
-             },
-              onChangePlaybackState: (value){
-                index == 0 ? setState(() {
-                _isPlaying1 = value;                
-              }): 
-               setState(() {
-                _isPlaying2 = value; 
-               });  
-            },
-        ),
-      );
-    } 
+  videoPlayback2() async {
+    bool playbackState = await _trimmer2.videPlaybackControl(
+      startValue: _startValue1,
+      endValue: _endValue1,
+    );
 
-    _dualVideoTrimmer(){
-      final mq = MediaQuery.of(context).size;
-      return Container(
-         height: mq.width,
-          width: mq.height,
-          alignment: Alignment.center,
-        child: Stack(
+    setState(() {
+      _isPlaying2 = playbackState;
+    });
+  }
+
+  dualTrimEditor() {
+    print(onTopVideo);
+    final mq = MediaQuery.of(context).size;
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: TrimEditor(
+        trimmer: onTopVideo ? _trimmer1 : _trimmer2,
+        maxVideoLength: const Duration(seconds: 30),
+        viewerHeight: 60.0,
+        viewerWidth: mq.width,
+        onChangeStart: (value) {
+          _startValue1 = value;
+        },
+        onChangeEnd: (value) {
+          _endValue1 = value;
+        },
+        onChangePlaybackState: (value) {
+          index == 0
+              ? setState(() {
+                  _isPlaying1 = value;
+                })
+              : setState(() {
+                  _isPlaying2 = value;
+                });
+        },
+      ),
+    );
+  }
+
+  _dualVideoTrimmer() {
+    final mq = MediaQuery.of(context).size;
+    return Container(
+      height: mq.height,
+      width: mq.width,
+      //alignment: Alignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-           Column(
-              //mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      index = 0;
-                      if (_isPlaying2)
-                      videoPlayback2();
-                      videoPlayback1();
-                    });
-                  },
-                  child: VideoViewer(trimmer: _trimmer1)
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    onTopVideo = true;
+                  });
+                  if (_isPlaying2) {
+                    videoPlayback2();
+                  }
+                  videoPlayback1();
+                },
+                child: VideoViewer(
+                  trimmer: _trimmer1,
+                ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   setState(() {
-                    index = 0;
-                    if (_isPlaying1)
-                    videoPlayback1();
-                    videoPlayback2();
+                    onTopVideo = false;
                   });
-                  },
-                child: VideoViewer(trimmer: _trimmer2,),
-            ),
-              ],
-            ),
+                  if (_isPlaying1) {
+                    videoPlayback1();
+                  }
+                  videoPlayback2();
+                },
+                child: VideoViewer(
+                  trimmer: _trimmer2,
+                ),
+              )
+            ],
+          ),
           _topRowWidget(),
-          //dualTrimEditor() 
+          dualTrimEditor()
         ],
-      ));
-    }
-
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Builder(
-            builder: (context) =>
-              _dualVideoTrimmer()
-            )
-      ); 
+        backgroundColor: Colors.black,
+        body: Builder(builder: (context) => _dualVideoTrimmer()));
   }
-  
 }

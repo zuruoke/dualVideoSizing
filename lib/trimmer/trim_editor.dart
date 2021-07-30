@@ -234,7 +234,6 @@ class _TrimEditorState extends State<TrimEditor> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     widget.trimmer.eventStream.listen((event) {
       if (event == TrimmerEvent.initialized) {
         //The video has been initialized, now we can load stuff

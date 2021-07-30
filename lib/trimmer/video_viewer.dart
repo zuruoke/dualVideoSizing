@@ -65,49 +65,50 @@ class _VideoViewerState extends State<VideoViewer> {
   @override
   Widget build(BuildContext context) {
     final _controller = videoPlayerController;
-    final Size size = MediaQuery.of(context).size; 
+    final Size size = MediaQuery.of(context).size;
+    print('videoHeight: ${widget.trimmer.videoHeight}');
     return (_controller != null && _controller.value.isInitialized) &&
-          (widget.trimmer.videoHeight != null && widget.trimmer.videoWidth != null)
-            ? Container(
-              width: size.width,
-              height: 0.5 * size.height,
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: SizedBox(
-                  height: widget.trimmer.videoHeight,
-                  width: widget.trimmer.videoWidth,
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  ),
-                ),
-              )) : Container();
-        // ? Container()
-        // : Center(
-        //     child: Padding(
-        //       padding: widget.padding,
-        //       child: AspectRatio(
-        //         aspectRatio: _controller.value.aspectRatio,
-        //         child: _controller.value.isInitialized
-        //             ? Container(
-        //                 decoration: BoxDecoration(
-        //                   border: Border.all(
-        //                     width: widget.borderWidth,
-        //                     color: widget.borderColor,
-        //                   ),
-        //                 ),
-        //                 child: VideoPlayer(_controller),
-        //               )
-        //             : Container(
-        //                 child: Center(
-        //                   child: CircularProgressIndicator(
-        //                     backgroundColor: Colors.white,
-        //                   ),
-        //                 ),
-        //               ),
-        //       ),
-        //     ),
-        //   );
+            (widget.trimmer.videoHeight != null &&
+                widget.trimmer.videoWidth != null)
+        ? FittedBox(
+            fit: BoxFit.contain,
+            child: SizedBox(
+              height: widget.trimmer.videoHeight,
+              width: widget.trimmer.videoWidth,
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            ),
+          )
+        : Container();
+
+    // ? Center(
+    //     child: Padding(
+    //       padding: widget.padding,
+    //       child: AspectRatio(
+    //         aspectRatio: _controller.value.aspectRatio,
+    //         child: _controller.value.isInitialized
+    //             ? Container(
+    //                 decoration: BoxDecoration(
+    //                   border: Border.all(
+    //                     width: widget.borderWidth,
+    //                     color: widget.borderColor,
+    //                   ),
+    //                 ),
+    //                 child: VideoPlayer(_controller),
+    //               )
+    //             : Container(
+    //                 child: Center(
+    //                   child: CircularProgressIndicator(
+    //                     backgroundColor: Colors.white,
+    //                   ),
+    //                 ),
+    //               ),
+    //       ),
+    //     ),
+    //   )
+    // : Container();
   }
 
   @override
